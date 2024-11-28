@@ -1,12 +1,12 @@
-import { FieldError } from "react-hook-form";
+import { FieldError, UseFormRegister } from "react-hook-form";
 
 type InputFieldProps = {
   label: string;
   type?: string;
-  register: any;
+  register: UseFormRegister<any>; // Enforce type safety
   name: string;
   defaultValue?: string;
-  error?: FieldError;
+  error?: FieldError | { message?: string }; // Support broader error types
   inputProps?: React.InputHTMLAttributes<HTMLInputElement>;
 };
 
@@ -25,7 +25,9 @@ const InputField = ({
       <input
         type={type}
         {...register(name)}
-        className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
+        className={`ring-[1.5px] p-2 rounded-md text-sm w-full ${
+          error ? "ring-red-500" : "ring-gray-300"
+        }`}
         {...inputProps}
         defaultValue={defaultValue}
       />

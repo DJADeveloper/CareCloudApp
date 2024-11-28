@@ -19,7 +19,14 @@ const schema = z.object({
   lastName: z.string().min(1, { message: "Last name is required!" }),
   phone: z.string().min(1, { message: "Phone is required!" }),
   address: z.string().min(1, { message: "Address is required!" }),
-  bloodType: z.string().min(1, { message: "Blood Type is required!" }),
+  roles: z
+    .array(z.string())
+    .min(1, { message: "At least one role is required!" }),
+  assignedResidents: z
+    .array(z.string())
+    .optional()
+    .default([])
+    .or(z.literal("")),
   birthday: z.date({ message: "Birthday is required!" }),
   sex: z.enum(["male", "female"], { message: "Sex is required!" }),
   img: z.instanceof(File, { message: "Image is required" }),
@@ -27,7 +34,7 @@ const schema = z.object({
 
 type Inputs = z.infer<typeof schema>;
 
-const TeacherForm = ({
+const StaffForm = ({
   type,
   data,
 }: {
@@ -48,7 +55,11 @@ const TeacherForm = ({
 
   return (
     <form className="flex flex-col gap-8" onSubmit={onSubmit}>
-      <h1 className="text-xl font-semibold">Create a new teacher</h1>
+      <h1 className="text-xl font-semibold">
+        {type === "create"
+          ? "Create a new staff member"
+          : "Update staff member"}
+      </h1>
       <span className="text-xs text-gray-400 font-medium">
         Authentication Information
       </span>
@@ -109,13 +120,6 @@ const TeacherForm = ({
           error={errors.address}
         />
         <InputField
-          label="Blood Type"
-          name="bloodType"
-          defaultValue={data?.bloodType}
-          register={register}
-          error={errors.bloodType}
-        />
-        <InputField
           label="Birthday"
           name="birthday"
           defaultValue={data?.birthday}
@@ -139,6 +143,20 @@ const TeacherForm = ({
             </p>
           )}
         </div>
+        <InputField
+          label="Roles (comma-separated)"
+          name="roles"
+          defaultValue={data?.roles?.join(", ")}
+          register={register}
+          error={errors.roles}
+        />
+        <InputField
+          label="Assigned Residents (optional)"
+          name="assignedResidents"
+          defaultValue={data?.assignedResidents?.join(", ")}
+          register={register}
+          error={errors.assignedResidents}
+        />
         <div className="flex flex-col gap-2 w-full md:w-1/4 justify-center">
           <label
             className="text-xs text-gray-500 flex items-center gap-2 cursor-pointer"
@@ -162,4 +180,4 @@ const TeacherForm = ({
   );
 };
 
-export default TeacherForm;
+export default StaffForm;

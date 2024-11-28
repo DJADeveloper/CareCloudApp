@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useState } from "react";
 
 // Lazy load the forms
-const TeacherForm = dynamic(() => import("./forms/TeacherForm"), {
+const StaffForm = dynamic(() => import("./forms/StaffForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 const ResidentForm = dynamic(() => import("./forms/ResidentForm"), {
@@ -16,7 +16,7 @@ const ResidentForm = dynamic(() => import("./forms/ResidentForm"), {
 const forms: {
   [key: string]: (type: "create" | "update", data?: any) => JSX.Element;
 } = {
-  teacher: (type, data) => <TeacherForm type={type} data={data} />,
+  staff: (type, data) => <StaffForm type={type} data={data} />,
   resident: (type, data) => <ResidentForm type={type} data={data} />,
 };
 
@@ -26,7 +26,18 @@ const FormModal = ({
   data,
   id,
 }: {
-  table: "teacher" | "resident" | "family" | "class" | "event" | "announcement";
+  table:
+    | "staff"
+    | "resident"
+    | "family"
+    | "class"
+    | "event"
+    | "announcement"
+    | "assignment"
+    | "exam"
+    | "lesson"
+    | "subject"
+    | "careRecord";
   type: "create" | "update" | "delete";
   data?: any;
   id?: number;

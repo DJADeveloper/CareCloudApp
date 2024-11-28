@@ -1,5 +1,128 @@
 export let role = "admin";
 
+export const staffData = [
+  {
+    id: 1,
+    staffId: "STF1234567890",
+    name: "John Doe",
+    email: "john@carecloud.com",
+    photo:
+      "https://images.pexels.com/photos/2888150/pexels-photo-2888150.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    phone: "1234567890",
+    role: "Caregiver",
+    assignedResidents: ["Robert Johnson", "Emily Davis"],
+    address: "123 Main St, Anytown, USA",
+  },
+  {
+    id: 2,
+    staffId: "STF1234567891",
+    name: "Jane Doe",
+    email: "jane@carecloud.com",
+    photo:
+      "https://images.pexels.com/photos/936126/pexels-photo-936126.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    phone: "1234567890",
+    role: "Nurse",
+    assignedResidents: ["Jane Smith", "Michael Clark"],
+    address: "456 Elm St, Anytown, USA",
+  },
+  {
+    id: 3,
+    staffId: "STF1234567892",
+    name: "Mike Geller",
+    email: "mike@carecloud.com",
+    photo:
+      "https://images.pexels.com/photos/428328/pexels-photo-428328.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    phone: "1234567890",
+    role: "Doctor",
+    assignedResidents: ["Sophia Brown"],
+    address: "789 Oak St, Anytown, USA",
+  },
+  {
+    id: 4,
+    staffId: "STF1234567893",
+    name: "Jay French",
+    email: "jay@carecloud.com",
+    photo:
+      "https://images.pexels.com/photos/1187765/pexels-photo-1187765.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    phone: "1234567890",
+    role: "Physical Therapist",
+    assignedResidents: ["Samuel Green", "Lucy White"],
+    address: "321 Maple St, Anytown, USA",
+  },
+  {
+    id: 5,
+    staffId: "STF1234567894",
+    name: "Jane Smith",
+    email: "jane.smith@carecloud.com",
+    photo:
+      "https://images.pexels.com/photos/1102341/pexels-photo-1102341.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    phone: "1234567890",
+    role: "Caregiver",
+    assignedResidents: ["Charlotte Hall", "Oliver Martinez"],
+    address: "654 Pine St, Anytown, USA",
+  },
+  {
+    id: 6,
+    staffId: "STF1234567895",
+    name: "Anna Santiago",
+    email: "anna@carecloud.com",
+    photo:
+      "https://images.pexels.com/photos/712513/pexels-photo-712513.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    phone: "1234567890",
+    role: "Nurse",
+    assignedResidents: ["Darryl Adams"],
+    address: "987 Cedar St, Anytown, USA",
+  },
+  {
+    id: 7,
+    staffId: "STF1234567896",
+    name: "Allen Black",
+    email: "allen@carecloud.com",
+    photo:
+      "https://images.pexels.com/photos/1438081/pexels-photo-1438081.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    phone: "1234567890",
+    role: "Activity Coordinator",
+    assignedResidents: ["Emily Davis"],
+    address: "159 Spruce St, Anytown, USA",
+  },
+  {
+    id: 8,
+    staffId: "STF1234567897",
+    name: "Ophelia Castro",
+    email: "ophelia@carecloud.com",
+    photo:
+      "https://images.pexels.com/photos/1036623/pexels-photo-1036623.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    phone: "1234567890",
+    role: "Dietitian",
+    assignedResidents: ["Oliver Martinez"],
+    address: "753 Birch St, Anytown, USA",
+  },
+  {
+    id: 9,
+    staffId: "STF1234567898",
+    name: "Derek Briggs",
+    email: "derek@carecloud.com",
+    photo:
+      "https://images.pexels.com/photos/842980/pexels-photo-842980.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    phone: "1234567890",
+    role: "Counselor",
+    assignedResidents: ["Sophia Brown"],
+    address: "951 Willow St, Anytown, USA",
+  },
+  {
+    id: 10,
+    staffId: "STF1234567899",
+    name: "John Glover",
+    email: "john.glover@carecloud.com",
+    photo:
+      "https://images.pexels.com/photos/1043474/pexels-photo-1043474.jpeg?auto=compress&cs=tinysrgb&w=1200",
+    phone: "1234567890",
+    role: "Caregiver",
+    assignedResidents: ["Michael Clark"],
+    address: "357 Aspen St, Anytown, USA",
+  },
+];
+
 export const residentsData = [
   {
     id: "1",
