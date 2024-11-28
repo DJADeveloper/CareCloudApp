@@ -125,7 +125,7 @@ export const teachersData = [
   },
 ];
 
-export const studentsData = [
+export const residentsData = [
   {
     id: 1,
     studentId: "1234567890",
@@ -914,7 +914,6 @@ export const announcementsData = [
     date: "2025-01-01",
   },
 ];
-
 
 // YOU SHOULD CHANGE THE DATES OF THE EVENTS TO THE CURRENT DATE TO SEE THE EVENTS ON THE CALENDAR
 export const calendarEvents = [

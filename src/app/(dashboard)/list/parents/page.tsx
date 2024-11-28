@@ -9,7 +9,7 @@ type Parent = {
   id: number;
   name: string;
   email?: string;
-  students: string[];
+  residents: string[];
   phone: string;
   address: string;
 };
@@ -21,7 +21,7 @@ const columns = [
   },
   {
     header: "Student Names",
-    accessor: "students",
+    accessor: "residents",
     className: "hidden md:table-cell",
   },
   {
@@ -52,7 +52,7 @@ const ParentListPage = () => {
           <p className="text-xs text-gray-500">{item?.email}</p>
         </div>
       </td>
-      <td className="hidden md:table-cell">{item.students.join(",")}</td>
+      <td className="hidden md:table-cell">{item.residents.join(",")}</td>
       <td className="hidden md:table-cell">{item.phone}</td>
       <td className="hidden md:table-cell">{item.address}</td>
       <td>
@@ -82,9 +82,7 @@ const ParentListPage = () => {
             <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
               <Image src="/sort.png" alt="" width={14} height={14} />
             </button>
-            {role === "admin" && (
-              <FormModal table="teacher" type="create"/>
-            )}
+            {role === "admin" && <FormModal table="teacher" type="create" />}
           </div>
         </div>
       </div>
