@@ -8,7 +8,7 @@ import Image from "next/image";
 type Subject = {
   id: number;
   name: string;
-  teachers: string[];
+  staffs: string[];
 };
 
 const columns = [
@@ -17,8 +17,8 @@ const columns = [
     accessor: "name",
   },
   {
-    header: "Teachers",
-    accessor: "teachers",
+    header: "Staffs",
+    accessor: "staffs",
     className: "hidden md:table-cell",
   },
   {
@@ -34,7 +34,7 @@ const SubjectListPage = () => {
       className="border-b border-gray-200 even:bg-slate-50 text-sm hover:bg-lamaPurpleLight"
     >
       <td className="flex items-center gap-4 p-4">{item.name}</td>
-      <td className="hidden md:table-cell">{item.teachers.join(",")}</td>
+      <td className="hidden md:table-cell">{item.staffs.join(",")}</td>
       <td>
         <div className="flex items-center gap-2">
           {role === "admin" && (
@@ -62,7 +62,7 @@ const SubjectListPage = () => {
             <button className="w-8 h-8 flex items-center justify-center rounded-full bg-lamaYellow">
               <Image src="/sort.png" alt="" width={14} height={14} />
             </button>
-            {role === "admin" && <FormModal table="teacher" type="create" />}
+            {role === "admin" && <FormModal table="staff" type="create" />}
           </div>
         </div>
       </div>

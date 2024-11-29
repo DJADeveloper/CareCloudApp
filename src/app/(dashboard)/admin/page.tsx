@@ -4,6 +4,8 @@ import CountChart from "@/components/CountChart";
 import EventCalendar from "@/components/EventCalendar";
 import FinanceChart from "@/components/FinanceChart";
 import UserCard from "@/components/UserCard";
+import ResidentPage from "../resident/page";
+import ResidentListPage from "../list/residents/page";
 
 const AdminPage = () => {
   return (
@@ -31,6 +33,9 @@ const AdminPage = () => {
         {/* BOTTOM CHART */}
         <div className="w-full h-[500px]">
           <FinanceChart />
+        </div>
+        <div className="w-full h-[500px]">
+          <ResidentListPage />
         </div>
       </div>
       {/* RIGHT */}

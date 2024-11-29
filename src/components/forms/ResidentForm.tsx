@@ -5,18 +5,25 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import InputField from "../InputField";
 import Image from "next/image";
+import { useAppContext } from "@/context/AppContext"; // Import AppContext
+import { Resident } from "@/types/types";
 
 const schema = z.object({
   fullName: z.string().min(1, { message: "Full name is required!" }),
   email: z.string().email({ message: "Invalid email address!" }).optional(),
   phone: z.string().min(1, { message: "Phone is required!" }),
   address: z.string().min(1, { message: "Address is required!" }),
-  gender: z.enum(["male", "female", "other"], {
-    message: "Gender is required!",
-  }),
-  dateOfBirth: z.date({ message: "Date of birth is required!" }),
+  // gender: z
+  //   .enum(["M", "F", "Other"], {
+  //     message: "Gender is required!",
+  //   })
+  //   .optional(), // Make gender optional
+  dateOfBirth: z.preprocess(
+    (value) => (typeof value === "string" ? new Date(value) : value),
+    z.date({ message: "Date of birth is required!" })
+  ), // Converts string to Date
   pcp: z.string().min(1, { message: "Primary Care Physician is required!" }),
-  photo: z.instanceof(File, { message: "Photo is required!" }),
+  photo: z.any().optional(), // Make photo optional
   emergencyContactName: z.string().optional(),
   emergencyContactNumber: z.string().optional(),
   emergencyContactRelationship: z.string().optional(),
@@ -33,6 +40,8 @@ const ResidentForm = ({
   type: "create" | "update";
   data?: any;
 }) => {
+  const { addResident, uploadImageForResident } = useAppContext(); // Access AppContext functions
+
   const {
     register,
     handleSubmit,
@@ -41,8 +50,48 @@ const ResidentForm = ({
     resolver: zodResolver(schema),
   });
 
-  const onSubmit = handleSubmit((data) => {
-    console.log(data);
+  const onSubmit = handleSubmit(async (formData) => {
+    try {
+      // Transform data for Date and Gender fields
+      const transformedData = {
+        ...formData,
+        dateOfBirth: formData.dateOfBirth
+          ? new Date(formData.dateOfBirth)
+          : null, // Ensure Date of Birth is a Date object
+        photo: formData.photo?.[0] || null, // Handle file input
+        // gender: formData.gender as "M" | "F" | "Other", // Explicit type assertion
+      };
+
+      // Log the transformed data for debugging
+      console.log("Transformed Data:", transformedData);
+
+      // Upload the photo if it exists
+      let photoUrl = null;
+      if (transformedData.photo) {
+        photoUrl = await uploadImageForResident(
+          transformedData.fullName,
+          transformedData.photo
+        );
+      }
+
+      // Prepare the final data to send to Firebase
+      const residentData: Omit<Resident, "id"> = {
+        ...transformedData,
+        photo: photoUrl || "", // Ensure photo is a string
+        // gender: transformedData.gender || "", // Ensure it's correctly typed
+      };
+
+      // Call the addResident function
+      const newResident = await addResident(residentData);
+
+      // Success notification
+      console.log("Resident created:", newResident);
+      alert("Resident created successfully!");
+    } catch (error) {
+      // Handle errors
+      console.error("Error creating resident:", error);
+      alert("Failed to create resident. Please try again.");
+    }
   });
 
   return (
@@ -94,23 +143,25 @@ const ResidentForm = ({
           error={errors?.dateOfBirth}
           type="date"
         />
-        <div className="flex flex-col gap-2 w-full md:w-1/4">
+        {/* <div className="flex flex-col gap-2 w-full md:w-1/4">
           <label className="text-xs text-gray-500">Gender</label>
           <select
             className="ring-[1.5px] ring-gray-300 p-2 rounded-md text-sm w-full"
             {...register("gender")}
-            defaultValue={data?.gender}
+            defaultValue={data?.gender || ""}
           >
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="other">Other</option>
+            <option value="">Select Gender</option> 
+            <option value="M">Male</option>
+            <option value="F">Female</option>
+            <option value="Other">Other</option>
           </select>
           {errors.gender?.message && (
             <p className="text-xs text-red-400">
               {errors.gender.message.toString()}
             </p>
           )}
-        </div>
+        </div> */}
+
         <div className="flex flex-col gap-2 w-full md:w-1/4 justify-center">
           <label
             className="text-xs text-gray-500 flex items-center gap-2 cursor-pointer"

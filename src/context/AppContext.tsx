@@ -25,23 +25,9 @@ import {
 } from "firebase/firestore";
 import { db, storage } from "../firebase"; // Firebase Firestore instance
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+import { Resident } from "@/types/types";
 
 // Types for the context state
-interface Resident {
-  id: string;
-  fullName: string;
-  dateOfBirth: string;
-  gender: "M" | "F" | "Other";
-  address: string;
-  contactNumber?: string;
-  pcp?: string;
-  dncConsent?: boolean;
-  evacuationConsent?: boolean;
-  healthConditions?: string;
-  allergies?: string[];
-  dietaryRestrictions?: string[];
-}
-
 interface Log {
   id: string;
   residentId: string;
@@ -62,7 +48,7 @@ interface AppContextProps {
   error: string | null;
   fetchResidents: () => Promise<void>;
   fetchResident: (residentId: string) => Promise<void>;
-  addResident: (residentData: Resident) => Promise<string>;
+  addResident: (residentData: Omit<Resident, "id">) => Promise<Resident>; // Updated to return a full Resident object
   updateResident: (
     residentId: string,
     updatedData: Partial<Resident>
@@ -109,22 +95,18 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   const [error, setError] = useState<string | null>(null);
 
   // Fetch all residents
-  const fetchResidents = useCallback(async () => {
+  const fetchResidents = async (): Promise<Resident[]> => {
     try {
-      setLoading(true);
       const querySnapshot = await getDocs(collection(db, "residents"));
-      const residentsData = querySnapshot.docs.map((doc) => ({
+      return querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       })) as Resident[];
-      setResidents(residentsData);
-    } catch (err) {
-      setError("Failed to fetch residents");
-      console.error(err);
-    } finally {
-      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching residents:", error);
+      throw new Error("Failed to fetch residents");
     }
-  }, []);
+  };
 
   // Fetch a single resident
   const fetchResident = async (residentId: string) => {
@@ -151,20 +133,21 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   // Add a new resident
   const addResident = async (
     residentData: Omit<Resident, "id">
-  ): Promise<string> => {
+  ): Promise<Resident> => {
     try {
       const docRef: DocumentReference<DocumentData> = await addDoc(
         collection(db, "residents"),
         residentData
       );
 
-      // Remove id from residentData if it exists, and prioritize docRef.id
-      setResidents((prevResidents) => [
-        ...prevResidents,
-        { id: docRef.id, ...residentData }, // Always use docRef.id
-      ]);
+      // Create the resident object with the generated id
+      const newResident: Resident = { id: docRef.id, ...residentData };
 
-      return docRef.id;
+      // Update the state to include the new resident
+      setResidents((prevResidents) => [...prevResidents, newResident]);
+
+      // Return the complete resident object
+      return newResident;
     } catch (error) {
       console.error("Error adding resident:", error);
       throw new Error("Failed to add resident");
@@ -277,21 +260,36 @@ export const AppProvider: React.FC<AppProviderProps> = ({ children }) => {
   ): Promise<string> => {
     try {
       const imageRef = ref(storage, `residents/${fullName}/${imageFile.name}`);
+      console.log("Image reference created:", imageRef);
+
       const uploadTask = uploadBytesResumable(imageRef, imageFile);
 
       return new Promise((resolve, reject) => {
         uploadTask.on(
           "state_changed",
-          null,
-          (err) => reject(err),
+          (snapshot) => {
+            const progress =
+              (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log(`Upload is ${progress}% done`);
+          },
+          (err) => {
+            console.error("Upload failed:", err);
+            reject(err);
+          },
           async () => {
-            const url = await getDownloadURL(uploadTask.snapshot.ref);
-            resolve(url);
+            try {
+              const url = await getDownloadURL(uploadTask.snapshot.ref);
+              console.log("File uploaded successfully:", url);
+              resolve(url);
+            } catch (err) {
+              console.error("Error getting download URL:", err);
+              reject(err);
+            }
           }
         );
       });
     } catch (err) {
-      console.error(err);
+      console.error("Error in uploadImageForResident:", err);
       throw new Error("Failed to upload image");
     }
   };

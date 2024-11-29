@@ -122,7 +122,7 @@ const SingleResidentPage = () => {
               Resident&apos;s Lessons
             </Link>
             <Link className="p-3 rounded-md bg-lamaPurpleLight" href="/">
-              Resident&apos;s Teachers
+              Resident&apos;s Staffs
             </Link>
             <Link className="p-3 rounded-md bg-pink-50" href="/">
               Resident&apos;s Exams

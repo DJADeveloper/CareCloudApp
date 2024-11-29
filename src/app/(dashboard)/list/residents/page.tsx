@@ -1,10 +1,14 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import FormModal from "@/components/FormModal";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
-import { role, residentsData } from "@/lib/facilityFlowData";
+import { role } from "@/lib/facilityFlowData";
 import Image from "next/image";
 import Link from "next/link";
+import { useAppContext } from "@/context/AppContext"; // Import AppContext
 
 type Resident = {
   id: string;
@@ -51,6 +55,30 @@ const columns = [
 ];
 
 const ResidentListPage = () => {
+  const { fetchResidents } = useAppContext(); // Fetch residents from AppContext
+  const [residents, setResidents] = useState<Resident[]>([]); // State for resident data
+  const [loading, setLoading] = useState<boolean>(true); // Loading state
+  const [error, setError] = useState<string | null>(null); // Error state
+
+  // Fetch residents on component mount
+  useEffect(() => {
+    const loadResidents = async () => {
+      try {
+        setLoading(true);
+        const data = await fetchResidents(); // Fetch the data
+        console.log(data, "data");
+        setResidents(data); // Assign the fetched data to state
+      } catch (err) {
+        console.error("Error fetching residents:", err);
+        setError("Failed to fetch residents");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadResidents(); // Call the async function
+  }, [fetchResidents]);
+
   const renderRow = (item: Resident) => (
     <tr
       key={item.id}
@@ -94,6 +122,9 @@ const ResidentListPage = () => {
     </tr>
   );
 
+  if (loading) return <p>Loading residents...</p>;
+  if (error) return <p className="text-red-500">{error}</p>;
+
   return (
     <div className="bg-white p-4 rounded-md flex-1 m-4 mt-0">
       {/* TOP */}
@@ -113,7 +144,7 @@ const ResidentListPage = () => {
         </div>
       </div>
       {/* LIST */}
-      <Table columns={columns} renderRow={renderRow} data={residentsData} />
+      <Table columns={columns} renderRow={renderRow} data={residents} />
       {/* PAGINATION */}
       <Pagination />
     </div>
